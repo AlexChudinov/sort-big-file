@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cassert>
 #include <chrono>
+#include "partial-quick-sort.hpp"
 
 void save_test_file(const std::string& filename, uint32_t num)
 {
@@ -57,6 +58,7 @@ void merge_sort(
 	std::istream_iterator<uint32_t> it(in);
 	size_t sz = 10000000;
 	std::vector<uint32_t> vals;
+	vals.reserve(sz);
 	bool switch_to_temp = false;
 	std::ofstream out;
 	while(it != std::istream_iterator<uint32_t>())
@@ -91,12 +93,14 @@ void merge_sort(
 
 int main()
 {
-	save_test_file("test_file.bin", std::numeric_limits<uint32_t>::max());
+	//save_test_file("test_file.bin", std::numeric_limits<uint32_t>::max());
 
 	auto start = std::chrono::system_clock::now();
-	sort("test_file.bin", "sorted.txt");
+	PartialQuickSort sort_algo("test_file.bin", "sorted.txt");
+	sort_algo.run();
 
-	std::cout << "Time to sort without merge: " << std::chrono::duration<double>(std::chrono::system_clock::now() - start).count() << std::endl;
+	std::cout << "Time to sort without merge: "
+			  << std::chrono::duration<double>(std::chrono::system_clock::now() - start).count() << std::endl;
 
 	std::ifstream in("sorted.txt");
 
