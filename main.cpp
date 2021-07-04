@@ -104,7 +104,7 @@ int main()
 
 	std::ifstream in("sorted.txt");
 
-	assert(std::is_sorted(std::istream_iterator<uint32_t>(in), std::istream_iterator<uint32_t>()));
+	assert(std::is_sorted(std::istream_iterator<std::string>(in), std::istream_iterator<std::string>()));
 
 	return 0;
 }

@@ -2,6 +2,7 @@
 #define SORTINTERFACE_HPP
 
 #include <qt5/QtCore/QRunnable>
+#include <set>
 #include <string>
 
 class SortInterface : public QRunnable
@@ -22,14 +23,13 @@ public:
 
 protected:
 	/**
-	 * @brief max_length вычисляет максимальную длинну строки во входном файле
+	 * @brief calc_alphabet вычисление алфавита
 	 */
-	size_t max_length() const;
+	void calc_alphabet();
 	/**
-	 * @brief alphabet_size вычисляет длинну алфавита во входном файле
-	 * @return
+	 * @brief m_alpabet алфавит файла
 	 */
-	size_t alphabet_size() const;
+	std::set<char> m_alpabet;
 };
 
 #endif // SORTINTERFACE_HPP

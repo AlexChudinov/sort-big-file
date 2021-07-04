@@ -8,7 +8,7 @@ class PartialQuickSort : public SortInterface
 public:
         PartialQuickSort(
 			const std::string& src_file,
-			const std::string& dst_file);
+			const std::string& dest_file);
 
 		void run() override;
 
