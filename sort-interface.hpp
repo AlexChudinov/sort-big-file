@@ -2,7 +2,7 @@
 #define SORTINTERFACE_HPP
 
 #include <qt5/QtCore/QRunnable>
-#include <set>
+#include <map>
 #include <string>
 
 class SortInterface : public QRunnable
@@ -23,13 +23,18 @@ public:
 
 protected:
 	/**
-	 * @brief calc_alphabet вычисление алфавита
+	 * @brief BUFFER_ARRAY_SIZE максимальный размер массива для сортировки
 	 */
-	void calc_alphabet();
+	static constexpr size_t BUFFER_ARRAY_SIZE = 100000000;
 	/**
-	 * @brief m_alpabet алфавит файла
+	 * @brief calc_frequency_table вычисляет тыблицу частот
+	 * @param prefix строка, которая добавляется к каждому ключу таблицы спереди
 	 */
-	std::set<char> m_alpabet;
+	void calc_frequency_table(std::string prefix);
+	/**
+	 * @brief m_frequency_table таблица частот файла
+	 */	
+	std::map<std::string, size_t> m_frequency_table;
 };
 
 #endif // SORTINTERFACE_HPP

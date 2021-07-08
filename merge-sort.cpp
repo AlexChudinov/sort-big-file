@@ -5,8 +5,6 @@
 #include <iterator>
 #include <memory>
 
-constexpr size_t BUFFER_ARRAY_SIZE = 10000000;
-
 MergeSort::MergeSort(const std::string &src_file, const std::string &dest_file)
 	:
 	  SortInterface(src_file, dest_file)
@@ -36,27 +34,30 @@ void MergeSort::run()
 			sort_array.clear();
 		}
 	}
-	std::ofstream out(m_dest_file);
-	std::vector<std::shared_ptr<std::ifstream>> in_streams;
-	std::vector<std::istream_iterator<std::string>> in_stream_iterators;
-	std::for_each(
-				file_names.begin(),
-				file_names.end(),
-				[&in_streams, &in_stream_iterators](const std::string& file_name)
+	for (
+		 std::vector<std::string>::const_iterator it = file_names.begin();
+		 it != std::prev(file_names.end());
+		 ++it)
 	{
-		in_streams.emplace_back(new std::ifstream(file_name));
-		in_stream_iterators.emplace_back(*in_streams.back());
-	});
-	while (std::any_of(
-			   in_stream_iterators.begin(),
-			   in_stream_iterators.end(),
-			   [](std::istream_iterator<std::string> it){ return it != std::istream_iterator<std::string>(); }))
-	{
-		for (std::istream_iterator<std::string> it : in_stream_iterators)
-			if (it != std::istream_iterator<std::string>())
-				sort_array.push_back(* it);
-		std::sort(sort_array.begin(), sort_array.end());
-		std::copy(sort_array.begin(), sort_array.end(), std::ostream_iterator<std::string>(out));
-		sort_array.clear();
+		std::ifstream in;
+		in.open(*std::next(it));
+		std::copy(
+					std::istream_iterator<std::string>(in),
+					std::istream_iterator<std::string>(),
+					std::back_inserter(sort_array));
+		in.close();
+		std::ofstream out(*std::next(it));
+		in.open(*it);
+		std::merge(
+					sort_array.begin(), sort_array.end(),
+					std::istream_iterator<std::string>(in), std::istream_iterator<std::string>(),
+					std::ostream_iterator<std::string>(out));
 	}
+	std::ofstream out(m_dest_file);
+	in.close();
+	in.open(file_names.back());
+	std::copy(
+				std::istream_iterator<std::string>(in),
+				std::istream_iterator<std::string>(),
+				std::ostream_iterator<std::string>(out));
 }
