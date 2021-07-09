@@ -1,4 +1,4 @@
-#include "sort-interface.hpp"
+ #include "sort-interface.hpp"
 #include <fstream>
 #include <algorithm>
 #include <iterator>
@@ -25,25 +25,32 @@ SortInterface::SortInterface(
 
 void SortInterface::calc_frequency_table(std::string prefix)
 {
-	std::ifstream in(m_src_file);
-	size_t sz = m_frequency_table.at(prefix);
-	std::for_each(
-				std::istream_iterator<std::string>(in),
-				std::istream_iterator<std::string>(),
-				[this, prefix, &sz](std::string s)
+	if (prefix.empty())
 	{
-		if (s.size() > prefix.size() && boost::range::equal(prefix, s.substr(0, prefix.size())))
+		calc_frequency_table();
+	}
+	else
+	{
+		std::ifstream in(m_src_file);
+		size_t sz = m_frequency_table.at(prefix);
+		std::for_each(
+					std::istream_iterator<std::string>(in),
+					std::istream_iterator<std::string>(),
+					[this, prefix, &sz](std::string s)
 		{
-			std::string key = prefix + s[prefix.size()];
-			auto it = m_frequency_table.find(key);
-			if (it == m_frequency_table.end())
-				m_frequency_table[key] = 1;
-			else
-				it->second++;
-			sz--;
-		}
-	});
-	m_frequency_table[prefix] = sz;
+			if (s.size() > prefix.size() && boost::range::equal(prefix, s.substr(0, prefix.size())))
+			{
+				std::string key = prefix + s[prefix.size()];
+				auto it = m_frequency_table.find(key);
+				if (it == m_frequency_table.end())
+					m_frequency_table[key] = 1;
+				else
+					it->second++;
+				sz--;
+			}
+		});
+		m_frequency_table[prefix] = sz;
+	}
 	for (const auto& freq_ref : m_frequency_table)
 	{
 		if (freq_ref.second > BUFFER_ARRAY_SIZE)
@@ -51,4 +58,21 @@ void SortInterface::calc_frequency_table(std::string prefix)
 			calc_frequency_table(freq_ref.first);
 		}
 	}
+}
+
+void SortInterface::calc_frequency_table()
+{
+	std::ifstream in(m_src_file);
+	std::for_each(
+				std::istream_iterator<std::string>(in),
+				std::istream_iterator<std::string>(),
+				[this](std::string s)
+	{
+		std::string key(1, s[0]);
+		auto it = m_frequency_table.find(key);
+		if (it == m_frequency_table.end())
+			m_frequency_table[key] = 1;
+		else
+			it->second++;
+	});
 }

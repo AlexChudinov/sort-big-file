@@ -31,6 +31,7 @@ protected:
 	 * @param prefix строка, которая добавляется к каждому ключу таблицы спереди
 	 */
 	void calc_frequency_table(std::string prefix);
+	void calc_frequency_table();
 	/**
 	 * @brief m_frequency_table таблица частот файла
 	 */	

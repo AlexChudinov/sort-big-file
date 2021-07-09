@@ -9,7 +9,6 @@ MergeSort::MergeSort(const std::string &src_file, const std::string &dest_file)
 	:
 	  SortInterface(src_file, dest_file)
 {
-
 }
 
 void MergeSort::run()
